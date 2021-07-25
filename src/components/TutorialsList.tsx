@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
-import TutorialDataService from "../services/TutorialService";
+
 import { Link } from "react-router-dom";
+import { context } from "../http-common";
 import ITutorialData from '../types/Tutorial';
 
 const TutorialsList: React.FC = () => {
@@ -19,10 +20,9 @@ const TutorialsList: React.FC = () => {
   };
 
   const retrieveTutorials = () => {
-    TutorialDataService.getAll()
+    context.for(ITutorialData).find()
       .then(response => {
-        setTutorials(response.data);
-        console.log(response.data);
+        setTutorials(response);
       })
       .catch(e => {
         console.log(e);
@@ -41,9 +41,9 @@ const TutorialsList: React.FC = () => {
   };
 
   const removeAllTutorials = () => {
-    TutorialDataService.removeAll()
-      .then(response => {
-        console.log(response.data);
+    ITutorialData.removeAll()
+      .then(() => {
+
         refreshList();
       })
       .catch(e => {
@@ -52,12 +52,13 @@ const TutorialsList: React.FC = () => {
   };
 
   const findByTitle = () => {
-    TutorialDataService.findByTitle(searchTitle)
+    context.for(ITutorialData).find({ where: t => t.title.contains(searchTitle) })
+
       .then(response => {
-        setTutorials(response.data);
+        setTutorials(response);
         setCurrentTutorial(null);
         setCurrentIndex(-1);
-        console.log(response.data);
+        console.log(response);
       })
       .catch(e => {
         console.log(e);

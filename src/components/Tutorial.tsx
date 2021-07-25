@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { RouteComponentProps } from 'react-router-dom';
-
-import TutorialDataService from "../services/TutorialService";
+import { set } from "remult/set";
+import { context } from "../http-common";
 import ITutorialData from "../types/Tutorial";
 
 interface RouterProps { // type for `match.params`
@@ -11,20 +11,15 @@ interface RouterProps { // type for `match.params`
 type Props = RouteComponentProps<RouterProps>;
 
 const Tutorial: React.FC<Props> = (props: Props) => {
-  const initialTutorialState = {
-    id: null,
-    title: "",
-    description: "",
-    published: false
-  };
-  const [currentTutorial, setCurrentTutorial] = useState<ITutorialData>(initialTutorialState);
+
+  const [{ currentTutorial }, setCurrentTutorial] = useState({ currentTutorial: context.for(ITutorialData).create() });
   const [message, setMessage] = useState<string>("");
 
   const getTutorial = (id: string) => {
-    TutorialDataService.get(id)
-      .then(response => {
-        setCurrentTutorial(response.data);
-        console.log(response.data);
+    context.for(ITutorialData).findId(id)
+      .then(currentTutorial => {
+        setCurrentTutorial({ currentTutorial: currentTutorial });
+        console.log(currentTutorial);
       })
       .catch(e => {
         console.log(e);
@@ -37,21 +32,15 @@ const Tutorial: React.FC<Props> = (props: Props) => {
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setCurrentTutorial({ ...currentTutorial, [name]: value });
+    set(currentTutorial, { [name]: value });
+    setCurrentTutorial({ currentTutorial });
   };
 
   const updatePublished = (status: boolean) => {
-    var data = {
-      id: currentTutorial.id,
-      title: currentTutorial.title,
-      description: currentTutorial.description,
-      published: status
-    };
-
-    TutorialDataService.update(currentTutorial.id, data)
-      .then(response => {
-        console.log(response.data);
-        setCurrentTutorial({ ...currentTutorial, published: status });
+    set(currentTutorial, { published: status }).save()
+      .then(currentTutorial => {
+        console.log(currentTutorial);
+        setCurrentTutorial({ currentTutorial });
         setMessage("The status was updated successfully!");
       })
       .catch(e => {
@@ -60,9 +49,9 @@ const Tutorial: React.FC<Props> = (props: Props) => {
   };
 
   const updateTutorial = () => {
-    TutorialDataService.update(currentTutorial.id, currentTutorial)
+    currentTutorial.save()
       .then(response => {
-        console.log(response.data);
+        console.log(response);
         setMessage("The tutorial was updated successfully!");
       })
       .catch(e => {
@@ -71,9 +60,9 @@ const Tutorial: React.FC<Props> = (props: Props) => {
   };
 
   const deleteTutorial = () => {
-    TutorialDataService.remove(currentTutorial.id)
+    currentTutorial.delete()
       .then(response => {
-        console.log(response.data);
+        console.log(response);
         props.history.push("/tutorials");
       })
       .catch(e => {

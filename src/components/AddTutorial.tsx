@@ -1,38 +1,26 @@
 import React, { useState, ChangeEvent } from "react";
-import TutorialDataService from "../services/TutorialService";
+import { context } from "../http-common";
 import ITutorialData from '../types/Tutorial';
+import { set } from 'remult/set';
 
 const AddTutorial: React.FC = () => {
-  const initialTutorialState = {
-    id: null,
-    title: "",
-    description: "",
-    published: false
-  };
-  const [tutorial, setTutorial] = useState<ITutorialData>(initialTutorialState);
+
+  const [{tutorial}, setTutorial] = useState({ tutorial: context.for(ITutorialData).create() });
+  
   const [submitted, setSubmitted] = useState<boolean>(false);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setTutorial({ ...tutorial, [name]: value });
+    set(tutorial, { [name]: value });
+    setTutorial({ tutorial });
   };
 
   const saveTutorial = () => {
-    var data = {
-      title: tutorial.title,
-      description: tutorial.description
-    };
-
-    TutorialDataService.create(data)
-      .then(response => {
-        setTutorial({
-          id: response.data.id,
-          title: response.data.title,
-          description: response.data.description,
-          published: response.data.published
-        });
+    tutorial.save()
+      .then(tutorial => {
+        setTutorial({ tutorial });
         setSubmitted(true);
-        console.log(response.data);
+        console.log(tutorial);
       })
       .catch(e => {
         console.log(e);
@@ -40,7 +28,7 @@ const AddTutorial: React.FC = () => {
   };
 
   const newTutorial = () => {
-    setTutorial(initialTutorialState);
+    setTutorial({ tutorial: context.for(ITutorialData).create() });
     setSubmitted(false);
   };
 

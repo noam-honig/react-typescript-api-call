@@ -1,8 +1,4 @@
-import axios from "axios";
+import { Context } from "remult";
 
-export default axios.create({
-  baseURL: "http://localhost:8080/api",
-  headers: {
-    "Content-type": "application/json"
-  }
-});
+Context.apiBaseUrl='/api';
+export const context = new Context();
