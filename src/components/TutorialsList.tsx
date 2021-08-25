@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 
 import { Link } from "react-router-dom";
-import { context } from "../http-common";
+import { remult } from "../http-common";
 import ITutorialData from '../types/Tutorial';
 
 const TutorialsList: React.FC = () => {
@@ -20,7 +20,7 @@ const TutorialsList: React.FC = () => {
   };
 
   const retrieveTutorials = () => {
-    context.for(ITutorialData).find()
+    remult.repo(ITutorialData).find()
       .then(response => {
         setTutorials(response);
       })
@@ -52,7 +52,7 @@ const TutorialsList: React.FC = () => {
   };
 
   const findByTitle = () => {
-    context.for(ITutorialData).find({ where: t => t.title.contains(searchTitle) })
+    remult.repo(ITutorialData).find({ where: t => t.title.contains(searchTitle) })
 
       .then(response => {
         setTutorials(response);

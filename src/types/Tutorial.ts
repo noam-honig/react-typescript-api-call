@@ -1,4 +1,4 @@
-import { BackendMethod, Context, Entity, Field, IdEntity } from "remult";
+import { BackendMethod, Remult, Entity, Field, IdEntity } from "remult";
 
 @Entity({
   key: 'tutorials',
@@ -12,8 +12,8 @@ export default class ITutorialData extends IdEntity {
   @Field()
   published?: boolean = false;
   @BackendMethod({ allowed: true })
-  static async removeAll(context?: Context) {
-    for await (const tutorial of context!.for(ITutorialData).iterate()) {
+  static async removeAll(remult?: Remult) {
+    for await (const tutorial of remult!.repo(ITutorialData).iterate()) {
       await tutorial.delete();
     }
   }

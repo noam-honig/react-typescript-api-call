@@ -1,11 +1,11 @@
 import React, { useState, ChangeEvent } from "react";
-import { context } from "../http-common";
+import { remult } from "../http-common";
 import ITutorialData from '../types/Tutorial';
 import { set } from 'remult/set';
 
 const AddTutorial: React.FC = () => {
 
-  const [{tutorial}, setTutorial] = useState({ tutorial: context.for(ITutorialData).create() });
+  const [{tutorial}, setTutorial] = useState({ tutorial: remult.repo(ITutorialData).create() });
   
   const [submitted, setSubmitted] = useState<boolean>(false);
 
@@ -28,7 +28,7 @@ const AddTutorial: React.FC = () => {
   };
 
   const newTutorial = () => {
-    setTutorial({ tutorial: context.for(ITutorialData).create() });
+    setTutorial({ tutorial: remult.repo(ITutorialData).create() });
     setSubmitted(false);
   };
 

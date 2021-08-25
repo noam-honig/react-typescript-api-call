@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { RouteComponentProps } from 'react-router-dom';
 import { set } from "remult/set";
-import { context } from "../http-common";
+import { remult } from "../http-common";
 import ITutorialData from "../types/Tutorial";
 
 interface RouterProps { // type for `match.params`
@@ -12,11 +12,11 @@ type Props = RouteComponentProps<RouterProps>;
 
 const Tutorial: React.FC<Props> = (props: Props) => {
 
-  const [{ currentTutorial }, setCurrentTutorial] = useState({ currentTutorial: context.for(ITutorialData).create() });
+  const [{ currentTutorial }, setCurrentTutorial] = useState({ currentTutorial: remult.repo(ITutorialData).create() });
   const [message, setMessage] = useState<string>("");
 
   const getTutorial = (id: string) => {
-    context.for(ITutorialData).findId(id)
+    remult.repo(ITutorialData).findId(id)
       .then(currentTutorial => {
         setCurrentTutorial({ currentTutorial: currentTutorial });
         console.log(currentTutorial);
