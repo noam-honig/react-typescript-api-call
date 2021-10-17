@@ -1,4 +1,4 @@
-# Bezkoder React Crud remult
+# Bezkoder React Crud with Remult
 
 This project takes [Bezkoder React CRUD Example](https://www.bezkoder.com/react-typescript-api-call/) and turns it from a `front-end` only, to a `full-stack` implementation that uses `remult`.
 
