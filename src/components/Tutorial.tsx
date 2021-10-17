@@ -1,6 +1,5 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { RouteComponentProps } from 'react-router-dom';
-import { set } from "remult/set";
 import { remult } from "../http-common";
 import ITutorialData from "../types/Tutorial";
 
@@ -32,12 +31,11 @@ const Tutorial: React.FC<Props> = (props: Props) => {
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    set(currentTutorial, { [name]: value });
-    setCurrentTutorial({ currentTutorial });
+    setCurrentTutorial({ currentTutorial: currentTutorial.assign({ [name]: value }) });
   };
 
   const updatePublished = (status: boolean) => {
-    set(currentTutorial, { published: status }).save()
+    currentTutorial.assign({ published: status }).save()
       .then(currentTutorial => {
         console.log(currentTutorial);
         setCurrentTutorial({ currentTutorial });

@@ -1,18 +1,16 @@
 import React, { useState, ChangeEvent } from "react";
 import { remult } from "../http-common";
 import ITutorialData from '../types/Tutorial';
-import { set } from 'remult/set';
 
 const AddTutorial: React.FC = () => {
 
-  const [{tutorial}, setTutorial] = useState({ tutorial: remult.repo(ITutorialData).create() });
-  
+  const [{ tutorial }, setTutorial] = useState({ tutorial: remult.repo(ITutorialData).create() });
+
   const [submitted, setSubmitted] = useState<boolean>(false);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    set(tutorial, { [name]: value });
-    setTutorial({ tutorial });
+    setTutorial({ tutorial: tutorial.assign({ [name]: value }) });
   };
 
   const saveTutorial = () => {
